@@ -1,4 +1,4 @@
-class TailK < Formula
+class Tailk < Formula
   include Language::Python::Virtualenv
 
   desc "TailK is a small utility to tail logs from multiple kubernetes pods."
