@@ -1,0 +1,31 @@
+class TailK < Formula
+  include Language::Python::Virtualenv
+
+  desc "TailK is a small utility to tail logs from multiple kubernetes pods."
+  homepage "https://github.com/ffaraone/tailk"
+  url "{{ root_url }}"
+  sha256 "{{ root_digest }}"
+  license "Apache-2.0"
+  version "{{ root_version }}"
+  head "https://github.com/ffaraone/tailk.git"
+
+
+  depends_on "python@3.10"
+
+  def install
+    venv = virtualenv_create(libexec, "python3")
+
+{% for resource in resources %}
+    system libexec/"bin/pip", "install", "-v", "--no-deps",
+                              "--ignore-installed", "{{ resource.name }}=={{ resource.version }}"
+{% endfor %}
+    system libexec/"bin/pip", "install", "-v", "--no-deps",
+                              "--ignore-installed", "--no-binary",
+                              ":all", buildpath
+    bin.install_symlink libexec/"bin/tailk"
+  end
+
+  test do
+    assert_include "TailK", shell_output("#{bin}/tailk --help").strip
+  end
+end
